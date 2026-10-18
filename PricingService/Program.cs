@@ -1,26 +1,27 @@
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
+using PricingService;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+var startup = new Startup(builder.Configuration, builder.Environment);
+startup.ConfigureServices(builder.Services);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
+startup.Configure(app, app.Environment);
 
 app.Run();
+
+/// <summary>
+/// Exposes the classic (non minimal hosting) entry point used by the integration
+/// tests: <c>Program.CreateWebHostBuilder(...)</c> builds the same <see cref="Startup" />
+/// in the "Testing" environment (no Eureka registration, no Swagger).
+/// </summary>
+public partial class Program
+{
+    public static IHostBuilder CreateWebHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .UseEnvironment("Testing")
+            .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>());
+}

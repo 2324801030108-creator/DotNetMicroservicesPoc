@@ -482,3 +482,6 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Lab archive packages (e.g. MaiDinhTrung_*.zip) - never commit
+*.zip

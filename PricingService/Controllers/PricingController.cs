@@ -1,20 +1,25 @@
+using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using PricingService.Api.Commands;
-using PricingService.Api.Dtos;
-using PricingService.Api.Queries;
 
 namespace PricingService.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class PricingController(IMediator mediator) : ControllerBase
+public class PricingController : ControllerBase
 {
-    [HttpPost]
-    public Task<PricingDto> Create(CreatePricingCommand cmd, CancellationToken ct)
-        => mediator.Send(cmd, ct);
+    private readonly IMediator mediator;
 
-    [HttpGet("{id:guid}")]
-    public Task<PricingDto?> Get(Guid id, CancellationToken ct)
-        => mediator.Send(new GetPricingQuery(id), ct);
+    public PricingController(IMediator mediator)
+    {
+        this.mediator = mediator;
+    }
+
+    [HttpPost]
+    public async Task<JsonResult> Post([FromBody] CalculatePriceCommand command)
+    {
+        var result = await mediator.Send(command, default);
+        return new JsonResult(result);
+    }
 }
