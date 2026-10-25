@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using DashboardService.Api.Queries.Dtos;
 using MediatR;
 

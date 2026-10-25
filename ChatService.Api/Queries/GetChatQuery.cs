@@ -1,3 +1,4 @@
+using System;
 using MediatR;
 using ChatService.Api.Dtos;
 
