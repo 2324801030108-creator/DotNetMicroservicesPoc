@@ -1,0 +1,27 @@
+BÀI THỰC HÀNH SỐ 7
+LƯU TRỮ VÀ TRUY CẬP DỮ LIỆU HIỆU QUẢ CÙNG MARTEN
+(.NET Microservices - Bài toán Đại lý bảo hiểm)
+
+Link project GitHub:
+https://github.com/2324801030108-creator/DotNetMicroservicesPoc
+
+Nội dung đã hoàn thành:
+- Task #1: Thêm Marten 7.19.1 vào PaymentService bằng NuGet, cấu hình Marten
+  dùng PostgreSQL (ConnectionStrings:PgConnection).
+- Task #2: Bổ sung code cho PaymentService gồm 3 project:
+  PaymentService.Api, PaymentService, PaymentService.Test
+  (Domain, DataAccess/Marten, Messaging/RabbitMQ, Jobs/Hangfire, Queries,
+  Listeners, Init, Controllers, Startup).
+- Task #3: Bổ sung code cho ProductService gồm 3 project:
+  ProductService.Api, ProductService, ProductService.Test
+  (Domain, DataAccess/EF Core, Commands, Queries, Controllers, Program).
+
+Kết quả build:
+  dotnet build DotNetMicroservicesPoc.sln --nologo
+  -> Build succeeded: 0 Error(s), 30 Warning(s)
+
+Kết quả test:
+  dotnet test PaymentService.Test -> Passed: 6,  Failed: 0
+  dotnet test ProductService.Test -> Passed: 14, Failed: 0
+
+Log build chi tiết: build-result.txt (trong repository).

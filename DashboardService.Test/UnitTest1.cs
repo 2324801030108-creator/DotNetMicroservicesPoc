@@ -1,3 +1,5 @@
+using Xunit;
+
 namespace DashboardService.Test;
 
 public class UnitTest1

@@ -86,3 +86,51 @@ File `build-result.txt` là log `dotnet build` (0 errors).
 Chụp màn hình Visual Studio / terminal khi build và nộp kèm ảnh. Càng ít lỗi càng cao điểm — hiện tại **0 lỗi**.
 
 Hạn nộp: trước 18h00 ngày 11/10/2026.
+
+## 6. Bài thực hành số 7 – Lưu trữ & truy cập dữ liệu với Marten
+
+### Task #1 – Thêm Marten vào dự án
+- Đã cài `Marten 7.19.1` (NuGet) cho `PaymentService`:
+  ```
+  dotnet add PaymentService package Marten --version 7.19.1
+  ```
+- Cấu hình trong `PaymentService/DataAccess/Marten/MartenInstaller.cs`:
+  ```csharp
+  services.AddMarten(Configuration.GetConnectionString("PgConnection"));
+  ```
+  Chuỗi kết nối `PgConnection` nằm trong `PaymentService/appsettings.json`
+  (`lab_netmicro_payments`, user `lab_user`/`lab_pass`).
+- Kèm theo các gói phục vụ code mẫu: `Hangfire.AspNetCore`, `Hangfire.PostgreSql`,
+  `EasyNetQ`, `GlobalExceptionHandler`, `Microsoft.AspNetCore.Mvc.NewtonsoftJson`.
+
+### Task #2 – Bổ sung code PaymentService (3 thư mục)
+- `PaymentService/` (Implementation): `Domain/`, `DataAccess/` (Marten document store),
+  `Messaging/` (RabbitMQ listeners), `Jobs/` (Hangfire), `Init/`, `Queries/`,
+  `Listeners/`, `Extensions/`, `Infrastructure/`, `Controllers/PaymentController.cs`,
+  `Startup.cs`.
+- `PaymentService.Api/`: `Commands/`, `Queries/`, `Events/`, `Exceptions/`.
+- `PaymentService.Test/`: `Domain/PolicyAccountTest.cs`, `MockPolicyAccountRepository.cs`.
+- Đã bổ sung `PolicyCreated`/`PolicyTerminated` trong `PolicyService.Api/Events/PolicyEvents.cs`
+  để các listener của PaymentService, ChatService và DashboardService cùng biên dịch.
+
+### Task #3 – Bổ sung code ProductService (3 thư mục)
+- `ProductService/` (Implementation): `Domain/`, `DataAccess/` (EF Core InMemory),
+  `Commands/`, `Queries/`, `Init/`, `Controllers/ProductsController.cs`, `Program.cs`.
+- `ProductService.Api/`: `Commands/` (+ DTOs), `Queries/` (+ DTOs, Converters).
+- `ProductService.Test/`: `Domain/`, `Handlers/`, `Controllers/`, `TestData/`.
+- Đã xoá file DTO trùng lặp `ProductService.Api/Queries/Dtos/ProductDtos.cs` và thay bằng
+  các file DTO tách riêng theo code mẫu (`ProductDto.cs`, `ChoiceDto.cs`, `CoverDto.cs`,
+  `QuestionDto.cs`).
+
+### Kết quả kiểm tra
+```
+dotnet build DotNetMicroservicesPoc.sln --nologo
+    30 Warning(s)
+    0 Error(s)
+```
+```
+dotnet test PaymentService.Test      -> Passed: 6,  Failed: 0
+dotnet test ProductService.Test      -> Passed: 14, Failed: 0
+```
+Log build đầy đủ: `build-result.txt`. Link GitHub nộp bài: `TestResult_linkgithub.txt`
+(https://github.com/2324801030108-creator/DotNetMicroservicesPoc).

@@ -1,20 +1,25 @@
+﻿using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using PaymentService.Api.Commands;
-using PaymentService.Api.Dtos;
 using PaymentService.Api.Queries;
 
 namespace PaymentService.Controllers;
 
-[ApiController]
 [Route("api/[controller]")]
-public class PaymentController(IMediator mediator) : ControllerBase
+[ApiController]
+public class PaymentController : ControllerBase
 {
-    [HttpPost]
-    public Task<PaymentDto> Create(CreatePaymentCommand cmd, CancellationToken ct)
-        => mediator.Send(cmd, ct);
+    private readonly IMediator bus;
 
-    [HttpGet("{id:guid}")]
-    public Task<PaymentDto?> Get(Guid id, CancellationToken ct)
-        => mediator.Send(new GetPaymentQuery(id), ct);
+    public PaymentController(IMediator bus)
+    {
+        this.bus = bus;
+    }
+
+    [HttpGet("accounts/{policyNumber}")]
+    public async Task<ActionResult> AccountBalance(string policyNumber)
+    {
+        var result = await bus.Send(new GetAccountBalanceQuery { PolicyNumber = policyNumber });
+        return new JsonResult(result);
+    }
 }

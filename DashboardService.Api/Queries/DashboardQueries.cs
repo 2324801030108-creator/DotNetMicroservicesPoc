@@ -5,8 +5,6 @@ using MediatR;
 
 namespace DashboardService.Api.Queries;
 
-public enum TimeUnit { Day, Month, Year }
-
 public class GetTotalSalesQuery : IRequest<GetTotalSalesResult>
 {
     public string? ProductCode { get; set; }
@@ -16,23 +14,26 @@ public class GetTotalSalesQuery : IRequest<GetTotalSalesResult>
 
 public class GetTotalSalesResult
 {
-    public SalesTotalDto Total { get; set; } = new();
-    public Dictionary<string, SalesTotalDto> PerProductTotal { get; set; } = new();
+    public SalesDto Total { get; set; } = new();
+    public Dictionary<string, SalesDto> PerProductTotal { get; set; } = new();
 }
 
 public class GetAgentsSalesQuery : IRequest<GetAgentsSalesResult>
 {
+    public string? AgentLogin { get; set; }
+    public string? ProductCode { get; set; }
     public DateTime SalesDateFrom { get; set; }
     public DateTime SalesDateTo { get; set; }
 }
 
 public class GetAgentsSalesResult
 {
-    public Dictionary<string, SalesTotalDto> PerAgentTotal { get; set; } = new();
+    public Dictionary<string, SalesDto> PerAgentTotal { get; set; } = new();
 }
 
 public class GetSalesTrendsQuery : IRequest<GetSalesTrendsResult>
 {
+    public string? ProductCode { get; set; }
     public DateTime SalesDateFrom { get; set; }
     public DateTime SalesDateTo { get; set; }
     public TimeUnit Unit { get; set; }
@@ -40,5 +41,5 @@ public class GetSalesTrendsQuery : IRequest<GetSalesTrendsResult>
 
 public class GetSalesTrendsResult
 {
-    public List<PeriodSalesDto> PeriodsSales { get; set; } = new();
+    public List<PeriodSaleDto> PeriodsSales { get; set; } = new();
 }
